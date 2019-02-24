@@ -10,6 +10,7 @@ private:
 public:
     bool checkCity(std::string);
     int establishServer(std::string, int);
+    ~TCPNetwork();
 };
 
 #endif
