@@ -8,7 +8,7 @@
 bool TCPNetwork::checkCity(std::string city)
 {
     bool checkFlag = false;
-    send(this->sock_fd, city.c_str(), sizeof(char) * city.length(), 0);
+    send(this->sock_fd, city.c_str(), sizeof(char) * 255, 0);
     recv(this->sock_fd, &checkFlag, sizeof(bool), 0);
     return checkFlag;
 }
