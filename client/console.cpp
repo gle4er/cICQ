@@ -24,3 +24,8 @@ void Console::printInfo(std::string msg)
 {
     std::cout << msg << std::endl;
 }
+
+void Console::printCity(std::string city)
+{
+    std::cout << "Player choosed city: " << city << std::endl;
+}
