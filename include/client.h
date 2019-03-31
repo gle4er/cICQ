@@ -6,8 +6,6 @@
 
 #include <string>
 #include <fstream>
-#include <iostream> //удалить после дебага
-#include <sstream>
 #include <vector>
 
 class Client {

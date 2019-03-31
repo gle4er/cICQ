@@ -5,26 +5,16 @@ void Client::loadServers(std::string file)
     std::string line;
  
     std::ifstream in(file);
-    if (in.is_open())
-    {
-        int i = 0;
+    if (in.is_open()) {
         std::string tmp_line;
-        while (getline(in, line))
-        {
-            std::stringstream ss(line);
-            while(getline(ss, line, ':')){
-                i++;
-                if (i % 2)
-                    (tmp_line = line);
-                else {
-                    serverList.push_back({tmp_line, std::stoi(line)});
-                    std::cout << tmp_line << "  :  "<< line << std::endl;
-                }
-            }
+        while (getline(in, line)) {
+            std::size_t pos = line.find(":");
+            std::string ip = line.substr (0, pos);  
+            std::string port = line.substr (pos + 1, line.length() - 1);
+            serverList.push_back({ip, stoi(port)});
         }
     }
     in.close();
-    return;
 }
 
 void Client::connect()
@@ -81,7 +71,6 @@ int Client::waitForMove()
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
     loadServers("./serverlist");
-    /*
     connect();
     waitForAll();
 
@@ -93,5 +82,4 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
             currentClient = waitForMove();
         }
     }
-    */
 }
