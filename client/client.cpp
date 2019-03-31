@@ -2,7 +2,28 @@
 
 void Client::loadServers(std::string file)
 {
-    serverList.push_back({"127.0.0.1", 228});
+    std::string line;
+ 
+    std::ifstream in(file);
+    if (in.is_open())
+    {
+        int i = 0;
+        std::string tmp_line;
+        while (getline(in, line))
+        {
+            std::stringstream ss(line);
+            while(getline(ss, line, ':')){
+                i++;
+                if (i % 2)
+                    (tmp_line = line);
+                else {
+                    serverList.push_back({tmp_line, std::stoi(line)});
+                    std::cout << tmp_line << "  :  "<< line << std::endl;
+                }
+            }
+        }
+    }
+    in.close();
     return;
 }
 
@@ -59,7 +80,8 @@ int Client::waitForMove()
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
-    loadServers("ses");
+    loadServers("./serverlist");
+    /*
     connect();
     waitForAll();
 
@@ -71,4 +93,5 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
             currentClient = waitForMove();
         }
     }
+    */
 }
