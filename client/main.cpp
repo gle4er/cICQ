@@ -2,11 +2,11 @@
 
 #include "client.h"
 #include "interface/console.h"
-#include "network/fake_network.h"
+#include "network/tcp.h"
 
 int main()
 {
-    new Client(new Console(), new FakeNetwork());
+    new Client(new Console(), new TCPNetwork());
 
     return 0;
 }
