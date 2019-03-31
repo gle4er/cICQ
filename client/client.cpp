@@ -17,25 +17,28 @@ void Client::loadServers(std::string file)
     in.close();
 }
 
-void Client::connect()
+int Client::connect()
 {
-    for (int retries = 0; retries < (int)serverList.size(); retries++) {
-        currentServerId = (currentServerId + 1) % serverList.size();
-        Server currentServer = serverList[currentServerId];
+    for (int retries = 0; retries < 5; retries++) {
+        if (retries > 1) {
+            interface->printInfo("Retry to connect");
+        }
+        for (auto &currentServer : serverList) {
+            std::string addr = currentServer.ip + ":" + 
+                std::to_string(currentServer.port);
 
-        std::string addr = currentServer.ip + ":" + 
-            std::to_string(currentServer.port);
-
-        interface->printInfo("Connecting to server");
-        if (network->establishServer(currentServer.ip, currentServer.port)) {
-            std::string errMsg = "Something went wrong: " + addr;
-            interface->printError(errMsg);
-        } else {
-            std::string msg = "Connect successfull: " + addr;
-            interface->printInfo(msg);
-            break;
+            interface->printInfo("Connecting to server");
+            if (network->establishServer(currentServer.ip, currentServer.port)) {
+                std::string errMsg = "Something went wrong: " + addr;
+                interface->printError(errMsg);
+            } else {
+                std::string msg = "Connect successfull: " + addr;
+                interface->printInfo(msg);
+                return 0;
+            }
         }
     }
+    return -1;
 }
 
 void Client::waitForAll()
@@ -71,7 +74,12 @@ int Client::waitForMove()
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
     loadServers("./serverlist");
-    connect();
+    while (connect()) {
+        interface->printError("Cannot connect to one server!");
+        int answer = interface->getAnswerYesNo("Retry connect or quit?");
+        if (answer == -1)
+            exit(EXIT_FAILURE);
+    }
     waitForAll();
 
     int currentClient = 0;

@@ -23,7 +23,7 @@ private:
     int clientId = -1;
 
     void loadServers(std::string);
-    void connect();
+    int connect();
     void waitForAll();
     void enterCity();
     int waitForMove();
