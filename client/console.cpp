@@ -29,3 +29,19 @@ void Console::printCity(std::string city)
 {
     std::cout << "Player choosed city: " << city << std::endl;
 }
+
+int Console::getAnswerYesNo(std::string text)
+{
+    std::cout << text << " ";
+    while (1) {
+        std::cout << "[Y/n] ";
+        std::string answer;
+        std::getline(std::cin, answer);
+        if (answer == "Y" || answer == "y" ||
+                answer == "")
+            return 0;
+        else if (answer == "N" || answer == "n")
+            return -1;
+    }
+    return -1;
+}

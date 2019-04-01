@@ -2,29 +2,43 @@
 
 void Client::loadServers(std::string file)
 {
-    serverList.push_back({"127.0.0.1", 5000});
-    return;
-}
-
-void Client::connect()
-{
-    for (int retries = 0; retries < (int)serverList.size(); retries++) {
-        currentServerId = (currentServerId + 1) % serverList.size();
-        Server currentServer = serverList[currentServerId];
-
-        std::string addr = currentServer.ip + ":" + 
-            std::to_string(currentServer.port);
-
-        interface->printInfo("Connecting to server");
-        if (network->establishServer(currentServer.ip, currentServer.port)) {
-            std::string errMsg = "Something went wrong: " + addr;
-            interface->printError(errMsg);
-        } else {
-            std::string msg = "Connect successfull: " + addr;
-            interface->printInfo(msg);
-            break;
+    std::string line;
+ 
+    std::ifstream in(file);
+    if (in.is_open()) {
+        std::string tmp_line;
+        while (getline(in, line)) {
+            std::size_t pos = line.find(":");
+            std::string ip = line.substr (0, pos);  
+            std::string port = line.substr (pos + 1, line.length() - 1);
+            serverList.push_back({ip, stoi(port)});
         }
     }
+    in.close();
+}
+
+int Client::connect()
+{
+    for (int retries = 0; retries < 5; retries++) {
+        if (retries > 1) {
+            interface->printInfo("Retry to connect");
+        }
+        for (auto &currentServer : serverList) {
+            std::string addr = currentServer.ip + ":" + 
+                std::to_string(currentServer.port);
+
+            interface->printInfo("Connecting to server");
+            if (network->establishServer(currentServer.ip, currentServer.port)) {
+                std::string errMsg = "Something went wrong: " + addr;
+                interface->printError(errMsg);
+            } else {
+                std::string msg = "Connect successfull: " + addr;
+                interface->printInfo(msg);
+                return 0;
+            }
+        }
+    }
+    return -1;
 }
 
 void Client::waitForAll()
@@ -59,8 +73,13 @@ int Client::waitForMove()
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
-    loadServers("ses");
-    connect();
+    loadServers("./serverlist");
+    while (connect()) {
+        interface->printError("Cannot connect to one server!");
+        int answer = interface->getAnswerYesNo("Retry connect or quit?");
+        if (answer == -1)
+            exit(EXIT_FAILURE);
+    }
     waitForAll();
 
     int currentClient = 0;

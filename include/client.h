@@ -5,6 +5,7 @@
 #include "network/network.h"
 
 #include <string>
+#include <fstream>
 #include <vector>
 
 class Client {
@@ -22,7 +23,7 @@ private:
     int clientId = -1;
 
     void loadServers(std::string);
-    void connect();
+    int connect();
     void waitForAll();
     void enterCity();
     int waitForMove();

@@ -9,6 +9,7 @@ public:
     void printError(std::string);
     void printInfo(std::string);
     void printCity(std::string);
+    int getAnswerYesNo(std::string);
 };
 
 #endif
