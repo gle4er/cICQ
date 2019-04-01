@@ -21,6 +21,7 @@ int Server::ConnectClient(int Port)
 
     int sock_fd;
     sock_fd = accept(fd_listen, NULL, NULL);
+    std::cout << sock_fd << std::endl;
     buf[0] = (char)fd_listen;
     send(sock_fd, buf, sizeof(buf), 0);
 
