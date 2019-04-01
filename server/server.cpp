@@ -1,11 +1,6 @@
 #include "server.h"
 #include "logPlay.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 int Server::ConnectClient(int Port)
 {
@@ -27,7 +22,6 @@ int Server::ConnectClient(int Port)
     int sock_fd;
     sock_fd = accept(fd_listen, NULL, NULL);
     buf[0] = (char)fd_listen;
-    printf("%d\n", fd_listen);
     send(sock_fd, buf, sizeof(buf), 0);
 
     shutdown(sock_fd, 0);
@@ -36,6 +30,35 @@ int Server::ConnectClient(int Port)
     return fd_listen;
 }
 
+void Server::sendWord()
+{
+    logPlay *playTmp = new logPlay();
+    char buf[255];
+    while(1){ //condition ???
+        for(int it : roomPlayers){
+            std::cout << it << std::endl;
+            strcpy(buf, "You move");
+            recv(it, buf, sizeof(buf), 0);
+            
+            strcpy(buf, (char*)&it); //player walks now
+            for(int tmp : roomPlayers){
+                if(tmp != it)
+                    recv(tmp, buf, sizeof(buf), 0);
+            }
+
+            send(it, buf, sizeof(buf), 0);
+            if(playTmp->check(buf) == true){
+                for(int tmp : roomPlayers){
+                    if(tmp != it)
+                        recv(tmp, buf, sizeof(buf), 0);
+                }
+            }else{
+                strcpy(buf, "Bad city, enter another");
+                recv(it, buf, sizeof(buf), 0);
+            }
+        }
+    }
+}
 
 Server::Server()
 {
@@ -46,8 +69,8 @@ Server::Server()
         roomPlayers.push_back(ConnectClient(5000));
         count++;
     }
-    printf("\n\n");
-    for(int i = 0; i < roomPlayers.size(); i++){
-        std::cout << roomPlayers[i] << std::endl;
-    }
+    //    printf("\n\n");
+    //    for(int i = 0; i < roomPlayers.size(); i++){
+    //        std::cout << roomPlayers[i] << std::endl;
+    //    }
 }

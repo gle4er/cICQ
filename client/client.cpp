@@ -2,7 +2,7 @@
 
 void Client::loadServers(std::string file)
 {
-    serverList.push_back({"127.0.0.1", 228});
+    serverList.push_back({"127.0.0.1", 5000});
     return;
 }
 

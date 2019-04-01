@@ -5,11 +5,11 @@
 
 int main()
 {
-//    new Server();
-
-    logPlay *tmp = new logPlay();
+    Server *tmp = new Server();
+    tmp->sendWord();
+//    logPlay *tmp = new logPlay();
     
-    tmp->check("sdgf");
+//    tmp->check("Archangel");
 
     return 0;
 }

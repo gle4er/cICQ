@@ -10,8 +10,8 @@ bool logPlay::checkLetter()
 bool logPlay::checkCorrect()
 {
     if(vocab.find(this->word) == vocab.end())
-        return false;
-    return true;
+        return true;
+    return false;
 }
 
 void logPlay::printVocab()
@@ -36,14 +36,16 @@ bool logPlay::check(char tmp[255])
         return false;
     }
 
+    vocab.insert(this->word);
+//    printVocab();
     this->lastLetter = word[word.length() - 1];
+//    std::cout << this->lastLetter << std::endl;
     return true;
 }
 
 logPlay::logPlay()
 {
-    this->lastLetter = 'a';
+    this->lastLetter = 'A';
     vocab.insert("Irkutsk");
     vocab.insert("Moskow");
-    std::cout << "Hi" << std::endl;
 }
