@@ -4,7 +4,6 @@
 
 int Server::ConnectClient(int Port)
 {
-    char buf[10];
     //trune struct
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
@@ -21,9 +20,8 @@ int Server::ConnectClient(int Port)
 
     int sock_fd;
     sock_fd = accept(fd_listen, NULL, NULL);
+    send(sock_fd, &fd_listen, sizeof(fd_listen), 0);
     std::cout << sock_fd << std::endl;
-    buf[0] = (char)fd_listen;
-    send(sock_fd, buf, sizeof(buf), 0);
 
     shutdown(sock_fd, 0);
     shutdown(fd_listen, 0);
