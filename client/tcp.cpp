@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 
 bool TCPNetwork::checkCity(std::string city)
@@ -28,7 +29,7 @@ int TCPNetwork::establishServer(std::string ip, int port)
 	this->sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 	client_addr.sin_family = AF_INET;
 	client_addr.sin_port = htons(port);
-	client_addr.sin_addr.s_addr = htonl(*ip.c_str());
+	client_addr.sin_addr.s_addr = inet_addr(ip.c_str());
 	return connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
 }
 

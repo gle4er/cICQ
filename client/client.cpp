@@ -31,6 +31,8 @@ int Client::connect()
             if (network->establishServer(currentServer.ip, currentServer.port)) {
                 std::string errMsg = "Something went wrong: " + addr;
                 interface->printError(errMsg);
+                std::perror("Establish connect to server");
+                interface->printError("");
             } else {
                 std::string msg = "Connect successfull: " + addr;
                 interface->printInfo(msg);
