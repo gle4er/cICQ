@@ -15,12 +15,12 @@ bool TCPNetwork::checkCity(std::string city)
     return checkFlag;
 }
 
-Network::msgType TCPNetwork::getMessages(char *buff)
+void TCPNetwork::getMessages(char *buff)
 {
-    recv(this->sock_fd, buff, sizeof(char) * 255, 0);
-    msgType type = (msgType) buff[0];
-    memcpy(buff, buff + 1, 254);
-    return type;
+    int rc = recv(this->sock_fd, buff, sizeof(char) * 255, 0);
+    if (rc <= 0) {
+        perror("recv");
+    }
 }
 
 int TCPNetwork::establishServer(std::string ip, int port)
@@ -34,14 +34,17 @@ int TCPNetwork::establishServer(std::string ip, int port)
 	return connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
 }
 
-int TCPNetwork::setClientId()
+int TCPNetwork::getClientId()
 {
-    int id = -1;
     char tmp[2];
     recv(this->sock_fd, tmp, sizeof(tmp), 0);
-    id = (int)tmp[0];
-    std::cout << id << std::endl;
+    int id = std::stoi(tmp);
     return id;
+}
+
+int TCPNetwork::getCurrPlayer()
+{
+    return this->getClientId();
 }
 
 TCPNetwork::~TCPNetwork()

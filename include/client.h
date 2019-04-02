@@ -26,7 +26,7 @@ private:
     int connect();
     void waitForAll();
     void enterCity();
-    int waitForMove();
+    void waitForMove();
 
 public:
     Client(Interface *iface, Network *netw);

@@ -45,7 +45,7 @@ int Client::connect()
 
 void Client::waitForAll()
 {
-    this->clientId = network->setClientId();
+    this->clientId = network->getClientId();
 }
 
 void Client::enterCity()
@@ -58,20 +58,10 @@ void Client::enterCity()
     } while (network->checkCity(input));
 }
 
-int Client::waitForMove()
+void Client::waitForMove()
 {
     char *buff = new char[255];
-    Network::msgType type;
-    do { 
-        type = network->getMessages(buff);
-        perror(NULL);
-        if (type == Network::MESSAGE) {
-            //interface->printCity(buff);
-        }
-    } while (type != Network::CHANGE_CLI_ID);
-    int currentClient = std::stoi(buff);
-    delete[] buff;
-    return currentClient;
+    network->getMessages(buff);
 }
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
@@ -83,14 +73,15 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
         if (answer == -1)
             exit(EXIT_FAILURE);
     }
+
     waitForAll();
 
-    int currentClient = 0;
     while (1) {
-        if (currentClient == this->clientId) {
+        int currPlayer = network->getCurrPlayer();
+        if (currPlayer == this->clientId) {
             enterCity();
         } else {
-            currentClient = waitForMove();
+            waitForMove();
         }
     }
 }
