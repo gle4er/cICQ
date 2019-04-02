@@ -10,16 +10,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define MAX_PLAYERS 2
+#define MAX_PLAYERS 3
 
 class Server{
     private:
-        int ConnectClient(int Port);
+        void ConnectClient(int Port);
     public:
         Server();
         
         std::vector<int> roomPlayers;
         void sendWord();
+        void getNumber();
 };
 
 #endif

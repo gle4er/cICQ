@@ -45,6 +45,7 @@ bool logPlay::check(char tmp[255])
 
 logPlay::logPlay()
 {
+    std::cout << "This is log" << std::endl;
     this->lastLetter = 'A';
     vocab.insert("Irkutsk");
     vocab.insert("Moskow");

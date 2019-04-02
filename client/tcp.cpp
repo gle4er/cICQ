@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+#include <iostream>
 bool TCPNetwork::checkCity(std::string city)
 {
     bool checkFlag = false;
@@ -36,7 +37,10 @@ int TCPNetwork::establishServer(std::string ip, int port)
 int TCPNetwork::setClientId()
 {
     int id = -1;
-    recv(this->sock_fd, &id, sizeof(id), 0);
+    char tmp[2];
+    recv(this->sock_fd, tmp, sizeof(tmp), 0);
+    id = (int)tmp[0];
+    std::cout << id << std::endl;
     return id;
 }
 

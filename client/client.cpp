@@ -64,8 +64,9 @@ int Client::waitForMove()
     Network::msgType type;
     do { 
         type = network->getMessages(buff);
+        perror(NULL);
         if (type == Network::MESSAGE) {
-            interface->printCity(buff);
+            //interface->printCity(buff);
         }
     } while (type != Network::CHANGE_CLI_ID);
     int currentClient = std::stoi(buff);
