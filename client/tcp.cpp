@@ -38,7 +38,7 @@ int TCPNetwork::getClientId()
 {
     char tmp[2];
     recv(this->sock_fd, tmp, sizeof(tmp), 0);
-    int id = std::stoi(tmp);
+    int id = (int)tmp[0]
     return id;
 }
 
