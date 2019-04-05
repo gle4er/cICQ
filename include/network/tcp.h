@@ -10,8 +10,9 @@ private:
 public:
     bool checkCity(std::string);
     int establishServer(std::string, int);
-    int setClientId();
-    msgType getMessages(char *);
+    int getClientId();
+    int getCurrPlayer();
+    void getMessages(char *);
     ~TCPNetwork();
 };
 
