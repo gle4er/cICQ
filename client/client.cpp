@@ -56,7 +56,7 @@ void Client::enterCity()
     do {
         input = interface->getInput(countOfTryes > 0);
         countOfTryes++;
-    } while (network->checkCity(input));
+    } while (!network->checkCity(input));
 }
 
 void Client::waitForMove()

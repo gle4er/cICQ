@@ -20,7 +20,7 @@ class logPlay{
         
         std::string word;
         std::unordered_set<std::string> vocab;
-        bool check(char tmp[255]);
+        bool check(char *tmp);
         void printVocab();
 };
 

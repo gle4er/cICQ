@@ -22,7 +22,7 @@ void logPlay::printVocab()
     }
 }
 
-bool logPlay::check(char tmp[255])
+bool logPlay::check(char *tmp)
 {
     word = std::string(tmp);
 //    std::cout << this->word << std::endl;

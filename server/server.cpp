@@ -32,32 +32,30 @@ void Server::ConnectClient(int Port)
 void Server::sendWord()
 {
     logPlay *playTmp = new logPlay();
-    char buf[255];
-    bool checkTmp = false;
+    char currentPlayer = 0;
     while(1){ //condition ???
         for(int it : roomPlayers){
             std::cout << it << std::endl;
             //send id walking
-            for(int i = 0; i < (int)roomPlayers.size(); i++){
-                buf[0] = (char)(i + 1);
-                send(it, buf, sizeof(buf), 0);
-            }
 
-            checkTmp = false;
-            while(checkTmp == false){
-                recv(it, buf, sizeof(buf), 0);
-                if(playTmp->check(buf) == true){
-                    for(int tmp : roomPlayers){
-                        if(tmp != it)
-                            send(tmp, buf, sizeof(buf), 0);
-                    }
-                    buf[0] = (char)1;
-                    send(it, buf, sizeof(buf), 0);
-                    checkTmp = true;
-                }else{
-                    buf[0] = (char)0;
-                    send(it, buf, sizeof(buf), 0);
+            bool isRightCity = false;
+            while(isRightCity == false){
+                for(auto &socket : roomPlayers){
+                    send(socket, &currentPlayer, sizeof(currentPlayer), 0);
                 }
+
+                char *city = new char[255];
+                recv(it, city, sizeof(char) * 255, 0);
+                std::cout << city << std::endl;
+                for(int tmp : roomPlayers){
+                    if(tmp != it)
+                        send(tmp, city, sizeof(char) * 255, 0);
+                }
+                if(playTmp->check(city) == true){
+                    isRightCity = true;
+                    currentPlayer = (currentPlayer + 1) % roomPlayers.size();
+                }
+                send(it, &isRightCity, sizeof(isRightCity), 0);
             }
         }
     }
@@ -68,7 +66,7 @@ void Server::setNumber()
     char buf[2];
     int tmp;
     for(int i = 0; i < (int)roomPlayers.size(); i++){
-        buf[0] = (char)(i + 1);
+        buf[0] = (char)i;
         tmp = roomPlayers[i];
         send(tmp, buf, sizeof(buf), 0);
     }
