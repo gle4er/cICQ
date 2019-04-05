@@ -63,6 +63,7 @@ void Client::waitForMove()
 {
     char *buff = new char[255];
     network->getMessages(buff);
+    interface->printTextMessage(buff);
 }
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)

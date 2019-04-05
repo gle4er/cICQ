@@ -18,12 +18,7 @@ bool TCPNetwork::checkCity(std::string city)
 
 void TCPNetwork::getMessages(char *buff)
 {
-    int rc = recv(this->sock_fd, buff, sizeof(char) * 255, 0);
-    std::cout << buff << std::endl;
-/*    if (rc <= 0) {
-        perror("recv");
-    }
-*/
+    recv(this->sock_fd, buff, sizeof(char) * 255, 0);
 }
 
 int TCPNetwork::establishServer(std::string ip, int port)
