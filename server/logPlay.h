@@ -1,27 +1,21 @@
 #ifndef LOGPLAY_H
 #define LOGPLAY_H
 
-#include <iostream>
-#include <map>
-#include <array>
 #include <string>
 #include <unordered_set>
-
-#include <string.h>
 
 class logPlay{
     private:
         char lastLetter;
-        bool checkLetter();
-        bool checkCorrect();
+        bool checkLetter(std::string);
+        bool isCityPresent(std::string);
+        std::unordered_set<std::string> enteredCities;
 
     public:
-        logPlay();
+        logPlay() { }
         
-        std::string word;
-        std::unordered_set<std::string> vocab;
         bool check(char *tmp);
-        void printVocab();
+        void printCities();
 };
 
 #endif

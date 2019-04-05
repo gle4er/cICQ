@@ -80,7 +80,7 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
 
     while (1) {
         int currPlayer = network->getCurrPlayer();
-        std::cout << currPlayer << this->clientId << std::endl;
+        std::cout << "Curr move id: " << currPlayer << " Curr id: " << this->clientId << std::endl;
         if (currPlayer == this->clientId) {
             enterCity();
         } else {

@@ -1,51 +1,53 @@
 #include "logPlay.h"
+#include <iostream>
+#include <algorithm>
 
-bool logPlay::checkLetter()
+bool logPlay::checkLetter(std::string word)
 {
     if(this->lastLetter == word[0])
         return true;
     return false;
 }
 
-bool logPlay::checkCorrect()
+bool logPlay::isCityPresent(std::string word)
 {
-    if(vocab.find(this->word) == vocab.end())
-        return true;
-    return false;
+    if(enteredCities.find(word) == enteredCities.end())
+        return false;
+    return true;
 }
 
-void logPlay::printVocab()
+void logPlay::printCities()
 {
     std::unordered_set<std::string> :: iterator itr;
-    for(itr = vocab.begin(); itr != vocab.end(); itr++){
+    for(itr = enteredCities.begin(); itr != enteredCities.end(); itr++){
         std::cout << (*itr) << std::endl;
     }
 }
 
 bool logPlay::check(char *tmp)
 {
-    word = std::string(tmp);
-//    std::cout << this->word << std::endl;
-    if(checkLetter() == false){
-        // Return what incorrect word
-        std::cout << "Incorrect first letter" << std::endl;
-        return false;
-    }
-    if(checkCorrect() == false){
-        std::cout << "Incorrect word" << std::endl;
-        return false;
+    std::string word(tmp);
+    std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+    std::cout << "City entered: " << word << std::endl;
+
+    if (enteredCities.size() != 0) {
+        //    std::cout << this->word << std::endl;
+        if(checkLetter(word) == false){
+            // Return what incorrect word
+            std::cout << "Incorrect first letter" << std::endl;
+            return false;
+        }
+        if(isCityPresent(word)){
+            std::cout << "This city was" << std::endl;
+            return false;
+        }
     }
 
-    vocab.insert(this->word);
+    enteredCities.insert(word);
 //    printVocab();
     this->lastLetter = word[word.length() - 1];
-//    std::cout << this->lastLetter << std::endl;
-    std::cout << "Word is correct" << std::endl;
+    std::cout << "Last letter: " << this->lastLetter << std::endl;
+    std::cout << "City is correct" << std::endl;
     return true;
 }
 
-logPlay::logPlay()
-{
-    this->lastLetter = 'a';
-    vocab.insert("astra");
-}

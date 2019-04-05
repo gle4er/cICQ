@@ -35,7 +35,7 @@ void Server::sendWord()
     char currentPlayer = 0;
     while(1){ //condition ???
         for(int it : roomPlayers){
-            std::cout << it << std::endl;
+            std::cout << "Current player mover: " << it << std::endl;
             //send id walking
 
             bool isRightCity = false;
@@ -46,7 +46,6 @@ void Server::sendWord()
 
                 char *city = new char[255];
                 recv(it, city, sizeof(char) * 255, 0);
-                std::cout << city << std::endl;
                 for(int tmp : roomPlayers){
                     if(tmp != it)
                         send(tmp, city, sizeof(char) * 255, 0);
@@ -56,6 +55,7 @@ void Server::sendWord()
                     currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
                 send(it, &isRightCity, sizeof(isRightCity), 0);
+                delete[] city;
             }
         }
     }
