@@ -33,43 +33,44 @@ void Server::sendWord()
 {
     logPlay *playTmp = new logPlay();
     char buf[255];
+    bool checkTmp = false;
     while(1){ //condition ???
         for(int it : roomPlayers){
             std::cout << it << std::endl;
-            strcpy(buf, "You move");
-            recv(it, buf, sizeof(buf), 0);
-
-            strcpy(buf, (char*)&it); //player walks now
-            for(int tmp : roomPlayers){
-                recv(tmp, buf, sizeof(buf), 0);
+            //send id walking
+            for(int i = 0; i < (int)roomPlayers.size(); i++){
+                buf[0] = (char)(i + 1);
+                send(it, buf, sizeof(buf), 0);
             }
 
-            send(it, buf, sizeof(buf), 0);
-            if(playTmp->check(buf) == true){
-                for(int tmp : roomPlayers){
-                    if(tmp != it)
-                        recv(tmp, buf, sizeof(buf), 0);
-                }
-            }else{
-                strcpy(buf, "Bad city, enter another");
+            checkTmp = false;
+            while(checkTmp == false){
                 recv(it, buf, sizeof(buf), 0);
+                if(playTmp->check(buf) == true){
+                    for(int tmp : roomPlayers){
+                        if(tmp != it)
+                            send(tmp, buf, sizeof(buf), 0);
+                    }
+                    buf[0] = (char)1;
+                    send(it, buf, sizeof(buf), 0);
+                    checkTmp = true;
+                }else{
+                    buf[0] = (char)0;
+                    send(it, buf, sizeof(buf), 0);
+                }
             }
         }
     }
 }
 
-void Server::getNumber()
+void Server::setNumber()
 {
-    std::cout << roomPlayers.size() << std::endl;
-
     char buf[2];
     int tmp;
     for(int i = 0; i < (int)roomPlayers.size(); i++){
-        std::cout << roomPlayers[i] << std::endl;
         buf[0] = (char)(i + 1);
         tmp = roomPlayers[i];
         send(tmp, buf, sizeof(buf), 0);
-        perror(NULL);
     }
 }
 
@@ -80,5 +81,6 @@ Server::Server()
     ConnectClient(5000);
 
     std::cout << "hi" << std::endl;
-    getNumber();
+    setNumber();
+    sendWord();
 }

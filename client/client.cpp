@@ -1,4 +1,5 @@
 #include "client.h"
+#include <iostream>
 
 void Client::loadServers(std::string file)
 {
@@ -78,6 +79,7 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
 
     while (1) {
         int currPlayer = network->getCurrPlayer();
+        std::cout << currPlayer << this->clientId << std::endl;
         if (currPlayer == this->clientId) {
             enterCity();
         } else {

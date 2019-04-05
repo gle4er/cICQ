@@ -12,15 +12,18 @@ bool TCPNetwork::checkCity(std::string city)
     bool checkFlag = false;
     send(this->sock_fd, city.c_str(), sizeof(char) * 255, 0);
     recv(this->sock_fd, &checkFlag, sizeof(bool), 0);
+    std::cout << checkFlag << std::endl;
     return checkFlag;
 }
 
 void TCPNetwork::getMessages(char *buff)
 {
     int rc = recv(this->sock_fd, buff, sizeof(char) * 255, 0);
-    if (rc <= 0) {
+    std::cout << buff << std::endl;
+/*    if (rc <= 0) {
         perror("recv");
     }
+*/
 }
 
 int TCPNetwork::establishServer(std::string ip, int port)
@@ -38,7 +41,7 @@ int TCPNetwork::getClientId()
 {
     char tmp[2];
     recv(this->sock_fd, tmp, sizeof(tmp), 0);
-    int id = (int)tmp[0]
+    int id = (int)tmp[0];
     return id;
 }
 

@@ -40,13 +40,12 @@ bool logPlay::check(char tmp[255])
 //    printVocab();
     this->lastLetter = word[word.length() - 1];
 //    std::cout << this->lastLetter << std::endl;
+    std::cout << "Word is correct" << std::endl;
     return true;
 }
 
 logPlay::logPlay()
 {
-    std::cout << "This is log" << std::endl;
-    this->lastLetter = 'A';
-    vocab.insert("Irkutsk");
-    vocab.insert("Moskow");
+    this->lastLetter = 'a';
+    vocab.insert("astra");
 }

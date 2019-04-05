@@ -20,7 +20,7 @@ class Server{
         
         std::vector<int> roomPlayers;
         void sendWord();
-        void getNumber();
+        void setNumber();
 };
 
 #endif
