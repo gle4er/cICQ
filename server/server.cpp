@@ -39,10 +39,14 @@ void Server::sendWord()
             //send id walking
 
             bool isRightCity = false;
+            bool firstAttempt = true;
             while(isRightCity == false){
                 for(auto &socket : roomPlayers){
-                    send(socket, &currentPlayer, sizeof(currentPlayer), 0);
+                    if (socket != it || firstAttempt) {
+                        send(socket, &currentPlayer, sizeof(currentPlayer), 0);
+                    }
                 }
+                firstAttempt = false;
 
                 char *city = new char[255];
                 recv(it, city, sizeof(char) * 255, 0);
@@ -51,7 +55,7 @@ void Server::sendWord()
                         send(tmp, city, sizeof(char) * 255, 0);
                 }
                 if(playTmp->check(city) == true){
-                    isRightCity = true;
+                    isRightCity = 1;
                     currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
                 send(it, &isRightCity, sizeof(isRightCity), 0);
