@@ -15,7 +15,6 @@ protected:
 	int sock_fd;
 
 public:
-    int getSocket();
     int setSocket(std::string, int);
 
     bool checkCity(std::string);

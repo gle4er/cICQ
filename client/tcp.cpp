@@ -4,21 +4,21 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <string.h>
+#include <string>
 #include <fstream>
 #include <vector>
 
 bool TCPNetwork::checkCity(std::string city)
 {
     bool checkFlag = false;
-    send(getSocket(), city.c_str(), sizeof(char) * 255, 0);
-    recv(getSocket(), &checkFlag, sizeof(checkFlag), 0);
+    send(this->sock_fd, city.c_str(), sizeof(char) * 255, 0);
+    recv(this->sock_fd, &checkFlag, sizeof(checkFlag), 0);
     return checkFlag;
 }
 
 void TCPNetwork::getMessages(char *buff)
 {
-    recv(getSocket(), buff, sizeof(char) * 255, 0);
+    recv(this->sock_fd, buff, sizeof(char) * 255, 0);
 }
 
 int TCPNetwork::establishServer()
@@ -50,7 +50,7 @@ int TCPNetwork::setSocket(std::string ip, int port)
 int TCPNetwork::getClientId()
 {
     char tmp[2];
-    recv(getSocket(), tmp, sizeof(tmp), 0);
+    recv(this->sock_fd, tmp, sizeof(tmp), 0);
     int id = (int)tmp[0];
     return id;
 }
@@ -58,11 +58,6 @@ int TCPNetwork::getClientId()
 int TCPNetwork::getCurrPlayer()
 {
     return this->getClientId();
-}
-
-int TCPNetwork::getSocket()
-{
-    return this->sock_fd;
 }
 
 TCPNetwork::TCPNetwork()
