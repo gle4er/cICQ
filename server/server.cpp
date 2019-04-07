@@ -29,10 +29,10 @@ void Server::ConnectClient(int Port)
     }
 }
 
-bool Server::chatCheck(char *city)
+bool Server::chatCheck(char *text)
 {
-    if(city[0] == '$'){
-        std::cout << "Message: " << city << std::endl;
+    if (text[0] == '$') {
+        std::cout << "Message: " << text << std::endl;
         return true;
     }
     return false;
@@ -64,14 +64,14 @@ void Server::sendWord()
                     isRightCity = true;
                     currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
+
                 for(int tmp : roomPlayers){
-                    if(tmp != it)
+                    if(tmp == it) {
+                        int tmpSend = playTmp->mistake;
+                        send(it, &tmpSend, sizeof(tmpSend), 0);
+                    } else {
                         send(tmp, recvBuff, sizeof(char) * 255, 0);
-                }
-                send(it, &isRightCity, sizeof(isRightCity), 0);
-                if(playTmp->mistake != 0){
-                    int tmpSend = playTmp->mistake;
-                    send(it, &tmpSend, sizeof(tmpSend), 0);
+                    }
                 }
                 delete[] recvBuff;
             }

@@ -52,26 +52,27 @@ void Client::waitForAll()
 void Client::enterCity()
 {
     std::string input;
-    int countOfTryes = 0;
+    int mistake = 0;
     do {
-        if(countOfTryes > 0){
-            this->mistake = network->whatMistake();
-            interface->printMistake(this->mistake);
+        if (mistake > 0) {
+            mistake = network->whatMistake();
+            interface->printMistake(mistake);
         }
-        input = interface->getInput(countOfTryes > 0);
-        countOfTryes++;
-    } while (!network->checkCity(input));
+        input = interface->getInput();
+    } while ((mistake = network->checkCity(input)) != 0 || input[0] == '$');
 }
 
 void Client::waitForMove(int currPlayer)
 {
     char *buff = new char[255];
     network->getMessages(buff);
-    if(buff[0] == 36){
-        std::cout << "Player " << currPlayer << " say: " << buff << std::endl;
-    }else{
-        interface->printTextMessage(buff);
+    std::string text(buff);
+    if (text[0] == '$') {
+        text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
+    } else {
+        text = "Player choosed city: " + text;
     }
+    interface->printTextMessage(text);
 }
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
@@ -86,13 +87,18 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
 
     waitForAll();
 
+    int prevPlayer = -1;
     while (1) {
         int currPlayer = network->getCurrPlayer();
-        std::cout << "Curr move id: " << currPlayer << " Curr id: " << this->clientId << std::endl;
+        if (prevPlayer != currPlayer) {
+            std::cout << "Curr move id: " << currPlayer << " Curr id: " << this->clientId << std::endl;
+        }
+
         if (currPlayer == this->clientId) {
             enterCity();
         } else {
             waitForMove(currPlayer);
         }
+        prevPlayer = currPlayer;
     }
 }

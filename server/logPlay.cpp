@@ -47,6 +47,7 @@ bool logPlay::check(char *tmp)
         }
         if(isCityExist(word)){
             std::cout << "This city does not exist" << std::endl;
+            this->mistake = 3;
             return false;
         }
         if(isCityPresent(word)){

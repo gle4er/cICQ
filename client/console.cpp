@@ -2,20 +2,12 @@
 
 #include <iostream>
 
-std::string Console::getInput(bool isNotFirst)
+std::string Console::getInput()
 {
-    if (isNotFirst && !this->message) {
-        std::cout << "Try again..." << std::endl;
-    }
-
     std::string input;
-    std::cout << "Enter city: ";
+    std::cout << "Enter city (or $some_text for messaging): ";
     std::getline(std::cin, input);
 
-    if(input[0] == '$')
-        this->message = true;
-    else
-        this->message = false;
     return input;
 }
 
@@ -23,8 +15,10 @@ void Console::printMistake(int mist)
 {   
     if(mist == 1)
         std::cout << "Wrong first letter. ";
-    if(mist == 2)
+    else if(mist == 2)
         std::cout << "This city has already been. ";
+    else if(mist == 3)
+        std::cout << "This city doesn't exists. ";
 }
 
 void Console::printError(std::string error)
@@ -37,9 +31,9 @@ void Console::printInfo(std::string msg)
     std::cout << msg << std::endl;
 }
 
-void Console::printTextMessage(std::string city)
+void Console::printTextMessage(std::string text)
 {
-    std::cout << "Player choosed city: " << city << std::endl;
+    std::cout << text << std::endl;
 }
 
 int Console::getAnswerYesNo(std::string text)
