@@ -32,7 +32,7 @@ int TCP_Fail_Tolerance::ackRecv(void *buffer, size_t length, int flags)
     return 0;
 }
 
-bool TCP_Fail_Tolerance::checkCity(std::string city)
+int TCP_Fail_Tolerance::checkCity(std::string city)
 {
     bool checkFlag = false;
     ackSend(city.c_str(), sizeof(char) * 255, 0);

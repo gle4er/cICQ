@@ -15,6 +15,7 @@
 class Server{
     private:
         void ConnectClient(int Port);
+        bool chatCheck(char *city);
     public:
         Server();
         

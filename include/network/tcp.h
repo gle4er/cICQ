@@ -17,8 +17,8 @@ protected:
 public:
     int setSocket(std::string, int);
 
-    bool checkCity(std::string);
     int establishServer();
+    int checkCity(std::string);
     int getClientId();
     int getCurrPlayer();
     void getMessages(char *);
