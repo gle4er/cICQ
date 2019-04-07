@@ -29,6 +29,15 @@ void Server::ConnectClient(int Port)
     }
 }
 
+bool Server::chatCheck(char *city)
+{
+    if(city[0] == 36){
+        std::cout << "Message: " << city << std::endl;
+        return true;
+    }
+    return false;
+}
+
 void Server::sendWord()
 {
     logPlay *playTmp = new logPlay();
@@ -36,11 +45,11 @@ void Server::sendWord()
     while(1){ //condition ???
         for(int it : roomPlayers){
             std::cout << "Current player mover: " << it << std::endl;
-            //send id walking
 
             bool isRightCity = false;
             bool firstAttempt = true;
             while(isRightCity == false){
+                //send id walking
                 for(auto &socket : roomPlayers){
                     if (socket != it || firstAttempt) {
                         send(socket, &currentPlayer, sizeof(currentPlayer), 0);
@@ -50,13 +59,16 @@ void Server::sendWord()
 
                 char *city = new char[255];
                 recv(it, city, sizeof(char) * 255, 0);
+
+                if(!chatCheck(city)){
+                    if(playTmp->check(city) == true){
+                        isRightCity = true;
+                        currentPlayer = (currentPlayer + 1) % roomPlayers.size();
+                    }
+                }
                 for(int tmp : roomPlayers){
                     if(tmp != it)
                         send(tmp, city, sizeof(char) * 255, 0);
-                }
-                if(playTmp->check(city) == true){
-                    isRightCity = 1;
-                    currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
                 send(it, &isRightCity, sizeof(isRightCity), 0);
                 delete[] city;
