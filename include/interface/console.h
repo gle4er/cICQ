@@ -4,6 +4,8 @@
 #include "interface/interface.h"
 
 class Console : public Interface {
+private:
+    bool message = false;
 public:
     std::string getInput(bool);
     void printError(std::string);

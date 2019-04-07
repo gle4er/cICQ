@@ -26,7 +26,7 @@ private:
     int connect();
     void waitForAll();
     void enterCity();
-    void waitForMove();
+    void waitForMove(int currPlayer);
 
 public:
     Client(Interface *iface, Network *netw);

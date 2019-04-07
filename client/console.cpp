@@ -4,14 +4,18 @@
 
 std::string Console::getInput(bool isNotFirst)
 {
-    if (isNotFirst) {
+    if (isNotFirst && !this->message) {
         std::cout << "This city is was! Try again..." << std::endl;
     }
 
     std::string input;
     std::cout << "Enter city: ";
-    std::cin >> input;
+    std::getline(std::cin, input);
 
+    if(input[0] == '$')
+        this->message = true;
+    else
+        this->message = false;
     return input;
 }
 

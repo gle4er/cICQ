@@ -59,11 +59,15 @@ void Client::enterCity()
     } while (!network->checkCity(input));
 }
 
-void Client::waitForMove()
+void Client::waitForMove(int currPlayer)
 {
     char *buff = new char[255];
     network->getMessages(buff);
-    interface->printTextMessage(buff);
+    if(buff[0] == 36){
+        std::cout << "Player " << currPlayer << " say: " << buff << std::endl;
+    }else{
+        interface->printTextMessage(buff);
+    }
 }
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
@@ -84,7 +88,7 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
         if (currPlayer == this->clientId) {
             enterCity();
         } else {
-            waitForMove();
+            waitForMove(currPlayer);
         }
     }
 }
