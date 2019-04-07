@@ -4,9 +4,13 @@
 #include "interface/console.h"
 #include "network/tcp.h"
 
-int main()
+int main(int argc, char **argv)
 {
-    new Client(new Console(), new TCPNetwork());
+    std::string serverlist = "./serverlist";
+    if (argc == 2) {
+        serverlist = argv[1];
+    }
+    new Client(new Console(), new TCPNetwork(serverlist));
 
     return 0;
 }

@@ -1,48 +1,4 @@
 #include "client.h"
-#include <iostream>
-
-void Client::loadServers(std::string file)
-{
-    std::string line;
- 
-    std::ifstream in(file);
-    if (in.is_open()) {
-        std::string tmp_line;
-        while (getline(in, line)) {
-            std::size_t pos = line.find(":");
-            std::string ip = line.substr (0, pos);  
-            std::string port = line.substr (pos + 1, line.length() - 1);
-            serverList.push_back({ip, stoi(port)});
-        }
-    }
-    in.close();
-}
-
-int Client::connect()
-{
-    for (int retries = 0; retries < 5; retries++) {
-        if (retries > 1) {
-            interface->printInfo("Retry to connect");
-        }
-        for (auto &currentServer : serverList) {
-            std::string addr = currentServer.ip + ":" + 
-                std::to_string(currentServer.port);
-
-            interface->printInfo("Connecting to server");
-            if (network->establishServer(currentServer.ip, currentServer.port)) {
-                std::string errMsg = "Something went wrong: " + addr;
-                interface->printError(errMsg);
-                std::perror("Establish connect to server");
-                interface->printError("");
-            } else {
-                std::string msg = "Connect successfull: " + addr;
-                interface->printInfo(msg);
-                return 0;
-            }
-        }
-    }
-    return -1;
-}
 
 void Client::waitForAll()
 {
@@ -68,8 +24,7 @@ void Client::waitForMove()
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
-    loadServers("./serverlist");
-    while (connect()) {
+    while (network->establishServer()) {
         interface->printError("Cannot connect to one server!");
         int answer = interface->getAnswerYesNo("Retry connect or quit?");
         if (answer == -1)
@@ -80,7 +35,8 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
 
     while (1) {
         int currPlayer = network->getCurrPlayer();
-        std::cout << "Curr move id: " << currPlayer << " Curr id: " << this->clientId << std::endl;
+        std::string infoMsg = "Curr move id: " + std::to_string(currPlayer) + " Curr id: " + std::to_string(this->clientId);
+        interface->printInfo(infoMsg);
         if (currPlayer == this->clientId) {
             enterCity();
         } else {

@@ -5,22 +5,38 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <fstream>
+#include <vector>
 
-#include <iostream>
 bool TCPNetwork::checkCity(std::string city)
 {
     bool checkFlag = false;
-    send(this->sock_fd, city.c_str(), sizeof(char) * 255, 0);
-    recv(this->sock_fd, &checkFlag, sizeof(checkFlag), 0);
+    send(getSocket(), city.c_str(), sizeof(char) * 255, 0);
+    recv(getSocket(), &checkFlag, sizeof(checkFlag), 0);
     return checkFlag;
 }
 
 void TCPNetwork::getMessages(char *buff)
 {
-    recv(this->sock_fd, buff, sizeof(char) * 255, 0);
+    recv(getSocket(), buff, sizeof(char) * 255, 0);
 }
 
-int TCPNetwork::establishServer(std::string ip, int port)
+int TCPNetwork::establishServer()
+{
+    for (int retries = 0; retries < 5; retries++) {
+        for (auto &currentServer : serverList) {
+            std::string addr = currentServer.ip + ":" + 
+                std::to_string(currentServer.port);
+
+            if (this->setSocket(currentServer.ip, currentServer.port) == 0) {
+                return 0;
+            }
+        }
+    }
+    return -1;
+}
+
+int TCPNetwork::setSocket(std::string ip, int port)
 {
 	struct sockaddr_in client_addr;
 
@@ -34,7 +50,7 @@ int TCPNetwork::establishServer(std::string ip, int port)
 int TCPNetwork::getClientId()
 {
     char tmp[2];
-    recv(this->sock_fd, tmp, sizeof(tmp), 0);
+    recv(getSocket(), tmp, sizeof(tmp), 0);
     int id = (int)tmp[0];
     return id;
 }
@@ -42,6 +58,32 @@ int TCPNetwork::getClientId()
 int TCPNetwork::getCurrPlayer()
 {
     return this->getClientId();
+}
+
+int TCPNetwork::getSocket()
+{
+    return this->sock_fd;
+}
+
+TCPNetwork::TCPNetwork()
+{
+    TCPNetwork("serverlist");
+}
+
+TCPNetwork::TCPNetwork(std::string file)
+{
+    std::ifstream in(file);
+    if (in.is_open()) {
+        std::string tmp_line;
+        std::string line;
+        while (getline(in, line)) {
+            std::size_t pos = line.find(":");
+            std::string ip = line.substr (0, pos);  
+            std::string port = line.substr (pos + 1, line.length() - 1);
+            serverList.push_back({ip, stoi(port)});
+        }
+    }
+    in.close();
 }
 
 TCPNetwork::~TCPNetwork()
