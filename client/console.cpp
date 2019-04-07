@@ -12,7 +12,7 @@ std::string Console::getInput(bool isNotFirst)
     std::cout << "Enter city: ";
     std::getline(std::cin, input);
 
-    if(input[0] == 36)
+    if(input[0] == '$')
         this->message = true;
     else
         this->message = false;
