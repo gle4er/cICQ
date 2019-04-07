@@ -19,6 +19,7 @@ class logPlay{
         
         bool check(char *tmp);
         void printCities();
+        int mistake;
 };
 
 #endif

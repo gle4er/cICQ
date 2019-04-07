@@ -7,9 +7,10 @@
 #include <string.h>
 
 #include <iostream>
-bool TCPNetwork::checkCity(std::string city)
+
+int TCPNetwork::checkCity(std::string city)
 {
-    bool checkFlag = false;
+    int checkFlag = 0;
     send(this->sock_fd, city.c_str(), sizeof(char) * 255, 0);
     recv(this->sock_fd, &checkFlag, sizeof(checkFlag), 0);
     return checkFlag;

@@ -8,7 +8,7 @@ private:
 	int sock_fd;
 
 public:
-    bool checkCity(std::string);
+    int checkCity(std::string);
     int establishServer(std::string, int);
     int getClientId();
     int getCurrPlayer();
