@@ -79,6 +79,5 @@ logPlay::logPlay()
         }
     }
     in.close();
-    std::cout << isCityExist("novosibirsk") << " " << isCityExist("koln") << " " << isCityExist("kursk") <<  " " << isCityExist("krasnoyarsk") << std::endl;
 }
 
