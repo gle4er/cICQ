@@ -29,16 +29,19 @@ bool logPlay::check(char *tmp)
     std::string word(tmp);
     std::transform(word.begin(), word.end(), word.begin(), ::tolower);
     std::cout << "City entered: " << word << std::endl;
+    this->mistake = 0;
 
     if (enteredCities.size() != 0) {
         //    std::cout << this->word << std::endl;
         if(checkLetter(word) == false){
             // Return what incorrect word
             std::cout << "Incorrect first letter" << std::endl;
+            this->mistake = 1;
             return false;
         }
         if(isCityPresent(word)){
             std::cout << "This city was" << std::endl;
+            this->mistake = 2;
             return false;
         }
     }

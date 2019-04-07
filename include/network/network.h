@@ -5,6 +5,7 @@
 
 class Network {
 public:
+    virtual int whatMistake() = 0;
     virtual bool checkCity(std::string city) = 0;                   // returns true, if city is correct
     virtual int establishServer(std::string ip, int port) = 0;      // make connect to the server
     virtual int getClientId() = 0;                                  // need for set clientId and waiting for all

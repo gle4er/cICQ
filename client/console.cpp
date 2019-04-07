@@ -5,7 +5,7 @@
 std::string Console::getInput(bool isNotFirst)
 {
     if (isNotFirst) {
-        std::cout << "This city is was! Try again..." << std::endl;
+        std::cout << "Try again..." << std::endl;
     }
 
     std::string input;
@@ -13,6 +13,14 @@ std::string Console::getInput(bool isNotFirst)
     std::cin >> input;
 
     return input;
+}
+
+void Console::printMistake(int mist)
+{   
+    if(mist == 1)
+        std::cout << "Wrong first letter. ";
+    if(mist == 2)
+        std::cout << "This city has already been. ";
 }
 
 void Console::printError(std::string error)

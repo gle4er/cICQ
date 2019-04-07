@@ -54,6 +54,10 @@ void Client::enterCity()
     std::string input;
     int countOfTryes = 0;
     do {
+        if(countOfTryes > 0){
+            this->mistake = network->whatMistake();
+            interface->printMistake(this->mistake);
+        }
         input = interface->getInput(countOfTryes > 0);
         countOfTryes++;
     } while (!network->checkCity(input));

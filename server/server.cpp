@@ -59,6 +59,10 @@ void Server::sendWord()
                     currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
                 send(it, &isRightCity, sizeof(isRightCity), 0);
+                if(playTmp->mistake != 0){
+                    int tmpSend = playTmp->mistake;
+                    send(it, &tmpSend, sizeof(tmpSend), 0);
+                }
                 delete[] city;
             }
         }

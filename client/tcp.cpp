@@ -7,6 +7,13 @@
 #include <string.h>
 
 #include <iostream>
+int TCPNetwork::whatMistake()
+{
+    int tmpMist = 0;
+    recv(this->sock_fd, &tmpMist, sizeof(tmpMist), 0);
+    return tmpMist;
+}
+
 bool TCPNetwork::checkCity(std::string city)
 {
     bool checkFlag = false;
