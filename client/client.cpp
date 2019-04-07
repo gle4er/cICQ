@@ -55,7 +55,6 @@ void Client::enterCity()
     int mistake = 0;
     do {
         if (mistake > 0) {
-            mistake = network->whatMistake();
             interface->printMistake(mistake);
         }
         input = interface->getInput();

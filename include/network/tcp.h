@@ -8,7 +8,6 @@ private:
 	int sock_fd;
 
 public:
-    int whatMistake();
     int checkCity(std::string);
     int establishServer(std::string, int);
     int getClientId();

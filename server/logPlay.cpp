@@ -18,8 +18,9 @@ bool logPlay::isCityPresent(std::string word)
 
 bool logPlay::isCityExist(std::string word)
 {
-     return (citiesVocabulaty.find(word) == enteredCities.end()) ?
-        false : true;
+    if(citiesVocabulaty.find(word) == citiesVocabulaty.end())
+        return false;
+    return true;
 }
 
 void logPlay::printCities()
@@ -45,16 +46,17 @@ bool logPlay::check(char *tmp)
             this->mistake = 1;
             return false;
         }
-        if(isCityExist(word)){
-            std::cout << "This city does not exist" << std::endl;
-            this->mistake = 3;
-            return false;
-        }
         if(isCityPresent(word)){
             std::cout << "This city was" << std::endl;
             this->mistake = 2;
             return false;
         }
+    }
+
+    if(!isCityExist(word)){
+        std::cout << "This city does not exist" << std::endl;
+        this->mistake = 3;
+        return false;
     }
 
     enteredCities.insert(word);
@@ -77,5 +79,6 @@ logPlay::logPlay()
         }
     }
     in.close();
+    std::cout << isCityExist("novosibirsk") << " " << isCityExist("koln") << " " << isCityExist("kursk") <<  " " << isCityExist("krasnoyarsk") << std::endl;
 }
 

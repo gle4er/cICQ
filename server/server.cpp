@@ -40,7 +40,7 @@ bool Server::chatCheck(char *text)
 
 void Server::sendWord()
 {
-    logPlay *playTmp = new logPlay();
+    logPlay playTmp;
     char currentPlayer = 0;
     while(1){ //condition ???
         for(int it : roomPlayers){
@@ -60,14 +60,14 @@ void Server::sendWord()
                 char *recvBuff = new char[255];
                 recv(it, recvBuff, sizeof(char) * 255, 0);
 
-                if(!chatCheck(recvBuff) && playTmp->check(recvBuff) == true){
+                if(!chatCheck(recvBuff) && playTmp.check(recvBuff) == true){
                     isRightCity = true;
                     currentPlayer = (currentPlayer + 1) % roomPlayers.size();
                 }
 
                 for(int tmp : roomPlayers){
                     if(tmp == it) {
-                        int tmpSend = playTmp->mistake;
+                        int tmpSend = playTmp.mistake;
                         send(it, &tmpSend, sizeof(tmpSend), 0);
                     } else {
                         send(tmp, recvBuff, sizeof(char) * 255, 0);
