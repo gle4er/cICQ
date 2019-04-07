@@ -8,18 +8,26 @@ void Client::waitForAll()
 void Client::enterCity()
 {
     std::string input;
-    int countOfTryes = 0;
+    int mistake = 0;
     do {
-        input = interface->getInput(countOfTryes > 0);
-        countOfTryes++;
-    } while (!network->checkCity(input));
+        if (mistake > 0) {
+            interface->printMistake(mistake);
+        }
+        input = interface->getInput();
+    } while ((mistake = network->checkCity(input)) != 0 || input[0] == '$');
 }
 
-void Client::waitForMove()
+void Client::waitForMove(int currPlayer)
 {
     char *buff = new char[255];
     network->getMessages(buff);
-    interface->printTextMessage(buff);
+    std::string text(buff);
+    if (text[0] == '$') {
+        text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
+    } else {
+        text = "Player choosed city: " + text;
+    }
+    interface->printTextMessage(text);
 }
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
@@ -33,14 +41,19 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
 
     waitForAll();
 
+    int prevPlayer = -1;
     while (1) {
         int currPlayer = network->getCurrPlayer();
-        std::string infoMsg = "Curr move id: " + std::to_string(currPlayer) + " Curr id: " + std::to_string(this->clientId);
-        interface->printInfo(infoMsg);
+        if (prevPlayer != currPlayer) {
+            std::string infoMsg = "Curr move id: " + std::to_string(currPlayer) + " Curr id: " + std::to_string(this->clientId);
+            interface->printInfo(infoMsg);
+        }
+
         if (currPlayer == this->clientId) {
             enterCity();
         } else {
-            waitForMove();
+            waitForMove(currPlayer);
         }
+        prevPlayer = currPlayer;
     }
 }

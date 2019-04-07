@@ -5,7 +5,8 @@
 
 class Console : public Interface {
 public:
-    std::string getInput(bool);
+    std::string getInput();
+    void printMistake(int mist);
     void printError(std::string);
     void printInfo(std::string);
     void printTextMessage(std::string);
