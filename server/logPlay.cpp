@@ -16,6 +16,12 @@ bool logPlay::isCityPresent(std::string word)
     return true;
 }
 
+bool logPlay::isCityExist(std::string word)
+{
+     return (citiesVocabulaty.find(word) == enteredCities.end()) ?
+        false : true;
+}
+
 void logPlay::printCities()
 {
     std::unordered_set<std::string> :: iterator itr;
@@ -39,6 +45,10 @@ bool logPlay::check(char *tmp)
             this->mistake = 1;
             return false;
         }
+        if(isCityExist(word)){
+            std::cout << "This city does not exist" << std::endl;
+            return false;
+        }
         if(isCityPresent(word)){
             std::cout << "This city was" << std::endl;
             this->mistake = 2;
@@ -52,5 +62,19 @@ bool logPlay::check(char *tmp)
     std::cout << "Last letter: " << this->lastLetter << std::endl;
     std::cout << "City is correct" << std::endl;
     return true;
+}
+
+logPlay::logPlay()
+{
+    std::string line;
+    std::string file = "./world_cities";
+ 
+    std::ifstream in(file);
+    if (in.is_open()) {
+        while (getline(in, line)) {
+            citiesVocabulaty.insert(line);
+        }
+    }
+    in.close();
 }
 

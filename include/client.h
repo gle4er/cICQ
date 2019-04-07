@@ -21,14 +21,13 @@ private:
     int currentServerId = -1;
 
     int clientId = -1;
+    int mistake;
 
     void loadServers(std::string);
     int connect();
     void waitForAll();
     void enterCity();
-    void waitForMove();
-    
-    int mistake;
+    void waitForMove(int currPlayer);
 
 public:
     Client(Interface *iface, Network *netw);
