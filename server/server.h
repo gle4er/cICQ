@@ -4,8 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include <stdio.h>
-#include <string.h>
+#include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -17,7 +16,7 @@ class Server{
         void ConnectClient(int Port);
         bool chatCheck(char *city);
     public:
-        Server();
+        Server(int clientPort, int peerPort, std::string clusterHosts);
         
         std::vector<int> roomPlayers;
         void sendWord();

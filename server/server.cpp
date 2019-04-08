@@ -90,11 +90,11 @@ void Server::setNumber()
     }
 }
 
-Server::Server()
+Server::Server(int clientPort, int peerPort, std::string clusterHosts)
 {
     /* Until all players are connected
      * */
-    ConnectClient(5000);
+    ConnectClient(clientPort);
 
     std::cout << "hi" << std::endl;
     setNumber();

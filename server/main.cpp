@@ -5,13 +5,17 @@
 
 #include <signal.h>
 
-int main()
+int main(int argc, char **argv)
 {
     signal(SIGPIPE, SIG_IGN);
-    Server *tmp = new Server();
-//    logPlay *tmp = new logPlay();
-    
-//    tmp->check("Archangel");
-
+    int clientPort = 5000,
+        peerPort = 9000;
+    std::string clusterHosts;
+    if (argc == 4) {
+        clientPort = std::atoi(argv[1]);
+        peerPort = std::atoi(argv[2]);
+        clusterHosts = argv[3];
+    }
+    new Server(clientPort, peerPort, clusterHosts);
     return 0;
 }
