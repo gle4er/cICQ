@@ -8,7 +8,7 @@ class Server:
         self.client_port = client_port
         self.cluster_port = cluster_port
 
-cluster_list = [Server('127.0.0.1', str(5000 + i), str(9000 + i)) for i in range(3)]
+cluster_list = [Server('127.0.0.1', str(5000 + i), str(9000 + i)) for i in range(2)]
 
 processes = []
 for number in range(len(cluster_list)):

@@ -25,7 +25,7 @@ void Client::waitForMove(int currPlayer)
     if (text[0] == '$') {
         text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
     } else {
-        text = "Player choosed city: " + text;
+        text = "Player " + std::to_string(currPlayer) + " choosed city: " + text;
     }
     interface->printTextMessage(text);
 }
@@ -44,6 +44,10 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
     int prevPlayer = -1;
     while (1) {
         int currPlayer = network->getCurrPlayer();
+        if (currPlayer == -1) {
+            interface->printError("One of players is disconnected, the game is going down...");
+            exit(EXIT_SUCCESS);
+        }
         if (prevPlayer != currPlayer) {
             std::string infoMsg = "Curr move id: " + std::to_string(currPlayer) + " Curr id: " + std::to_string(this->clientId);
             interface->printInfo(infoMsg);

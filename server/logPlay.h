@@ -13,13 +13,15 @@ class logPlay{
         bool isCityExist(std::string);
         std::unordered_set<std::string> enteredCities;
         std::unordered_set<std::string> citiesVocabulaty;
+        int mistake;
 
     public:
         logPlay();
-        
+        void insertCity(std::string city);
         bool check(char *tmp);
         void printCities();
-        int mistake;
+        int getMistake();
+        int getLastLetter();
 };
 
 #endif

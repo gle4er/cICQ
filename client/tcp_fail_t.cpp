@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <iostream>
 
 int TCP_Fail_Tolerance::ackSend(const void *buffer, size_t length, int flags)
 {
@@ -13,6 +14,8 @@ int TCP_Fail_Tolerance::ackSend(const void *buffer, size_t length, int flags)
         if (this->establishServer() != 0) {
             perror("Cannot connect to any server");
             exit(EXIT_FAILURE);
+        } else {
+            std::cerr << "Switched to slave" << std::endl;
         }
         sndCount = send(this->sock_fd, buffer, length, flags);
     }
@@ -26,15 +29,17 @@ int TCP_Fail_Tolerance::ackRecv(void *buffer, size_t length, int flags)
         if (this->establishServer() != 0) {
             perror("Cannot connect to any server");
             exit(EXIT_FAILURE);
+        } else {
+            std::cerr << "Switched to slave" << std::endl;
         }
         recvCount = recv(this->sock_fd, buffer, length, flags);
     }
-    return 0;
+    return recvCount;
 }
 
 int TCP_Fail_Tolerance::checkCity(std::string city)
 {
-    bool checkFlag = false;
+    int checkFlag = 0;
     ackSend(city.c_str(), sizeof(char) * 255, 0);
     ackRecv(&checkFlag, sizeof(checkFlag), 0);
     return checkFlag;

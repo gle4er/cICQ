@@ -19,6 +19,8 @@ void Console::printMistake(int mist)
         std::cout << "This city has already been. ";
     else if(mist == 3)
         std::cout << "This city doesn't exists. ";
+    else if(mist == -1)
+        std::cout << "Master server is going down, switched to slave. ";
 }
 
 void Console::printError(std::string error)
