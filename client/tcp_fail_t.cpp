@@ -52,4 +52,3 @@ void TCP_Fail_Tolerance::getMessages(char *buff)
 {
     ackRecv(buff, sizeof(char) * 255, 0);
 }
-

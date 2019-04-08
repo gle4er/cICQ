@@ -17,14 +17,13 @@ protected:
 public:
     int setSocket(std::string, int);
 
-    int establishServer();
-    int checkCity(std::string);
-    int getClientId();
-    int getCurrPlayer();
-    void getMessages(char *);
-    TCPNetwork();
-    TCPNetwork(std::string);
-    ~TCPNetwork();
+    virtual int establishServer();
+    virtual int checkCity(std::string);
+    virtual int getClientId();
+    virtual int getCurrPlayer();
+    virtual void getMessages(char *);
+    TCPNetwork(std::string file="./serverlist");
+    virtual ~TCPNetwork();
 };
 
 #endif

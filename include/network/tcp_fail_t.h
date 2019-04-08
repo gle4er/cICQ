@@ -9,13 +9,12 @@ public:
     int ackSend(const void *buffer, size_t length, int flags);
     int ackRecv(void *buffer, size_t length, int flags);
 
-    int checkCity(std::string);
-    int getClientId();
-    void getMessages(char *);
-    TCP_Fail_Tolerance() : 
-        TCPNetwork::TCPNetwork() {}
-    TCP_Fail_Tolerance(std::string ses) :
-        TCPNetwork::TCPNetwork(ses) {}
+    virtual int checkCity(std::string);
+    virtual int getClientId();
+    virtual void getMessages(char *);
+
+    TCP_Fail_Tolerance(std::string file="./serverlist") : TCPNetwork(file) {}
+    virtual ~TCP_Fail_Tolerance() {};
 };
 
 #endif

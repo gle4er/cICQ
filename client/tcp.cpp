@@ -60,11 +60,6 @@ int TCPNetwork::getCurrPlayer()
     return this->getClientId();
 }
 
-TCPNetwork::TCPNetwork()
-{
-    TCPNetwork("serverlist");
-}
-
 TCPNetwork::TCPNetwork(std::string file)
 {
     std::ifstream in(file);
