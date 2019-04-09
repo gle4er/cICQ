@@ -60,7 +60,7 @@ bool logPlay::check(char *tmp)
     }
 
 //    printVocab();
-    this->lastLetter = word[word.length() - 1];
+    insertCity(word);
     std::cout << "Last letter: " << this->lastLetter << std::endl;
     std::cout << "City is correct" << std::endl;
     return true;
@@ -69,6 +69,7 @@ bool logPlay::check(char *tmp)
 void logPlay::insertCity(std::string city)
 {
     enteredCities.insert(city);
+    this->lastLetter = city[city.length() - 1];
 }
 
 int logPlay::getMistake()

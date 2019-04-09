@@ -13,6 +13,7 @@ protected:
     };
     std::vector<Server> serverList;
 	int sock_fd;
+    int clientId;
 
 public:
     int setSocket(std::string, int);

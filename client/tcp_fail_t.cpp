@@ -11,7 +11,7 @@ int TCP_Fail_Tolerance::ackSend(const void *buffer, size_t length, int flags)
 {
     size_t sndCount = send(this->sock_fd, buffer, length, flags);
     if (sndCount == 0) {
-        if (this->establishServer() != 0) {
+        if (this->reconnect() != 0) {
             perror("Cannot connect to any server");
             exit(EXIT_FAILURE);
         } else {
@@ -26,7 +26,7 @@ int TCP_Fail_Tolerance::ackRecv(void *buffer, size_t length, int flags)
 {
     size_t recvCount = recv(this->sock_fd, buffer, length, flags);
     if (recvCount == 0) {
-        if (this->establishServer() != 0) {
+        if (this->reconnect() != 0) {
             perror("Cannot connect to any server");
             exit(EXIT_FAILURE);
         } else {
@@ -56,4 +56,15 @@ int TCP_Fail_Tolerance::getClientId()
 void TCP_Fail_Tolerance::getMessages(char *buff)
 {
     ackRecv(buff, sizeof(char) * 255, 0);
+}
+
+int TCP_Fail_Tolerance::reconnect()
+{
+    if (!establishServer()) {
+        int rc = send(this->sock_fd, &clientId, sizeof(clientId), 0);
+        perror("send");
+        if (rc > 0)
+            return 0;
+    }
+    return 1;
 }

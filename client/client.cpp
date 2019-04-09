@@ -24,6 +24,8 @@ void Client::waitForMove(int currPlayer)
     std::string text(buff);
     if (text[0] == '$') {
         text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
+    } else if (text[0] == '0') {
+        return;
     } else {
         text = "Player " + std::to_string(currPlayer) + " choosed city: " + text;
     }
@@ -32,12 +34,14 @@ void Client::waitForMove(int currPlayer)
 
 Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw)
 {
+    interface->printInfo("Connecting...");
     while (network->establishServer()) {
         interface->printError("Cannot connect to one server!");
         int answer = interface->getAnswerYesNo("Retry connect or quit?");
         if (answer == -1)
             exit(EXIT_FAILURE);
     }
+    interface->printInfo("Connected, wait for all");
 
     waitForAll();
 

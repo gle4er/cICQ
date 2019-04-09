@@ -48,7 +48,7 @@ void Server::CreateCluster(int Port, std::string serverLine)
     }
 }
 
-void Server::ConnectClient(int Port)
+int Server::initClientPort(int Port)
 {
     //trune struct
     struct sockaddr_in addr;
@@ -62,12 +62,18 @@ void Server::ConnectClient(int Port)
         perror("Setsockopt");
 
     bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr));
-    listen(fd_listen, 5);
+    perror("bind");
+    return fd_listen;
+}
 
-    int sock_fd;
+void Server::ConnectClient(int fd_listen)
+{
+    listen(fd_listen, 5);
+    perror("listen");
     int count = 0;
     while(count < MAX_PLAYERS){
-        sock_fd = accept(fd_listen, NULL, NULL);
+        int sock_fd = accept(fd_listen, NULL, NULL);
+        perror("accept");
         roomPlayers.push_back(sock_fd);
         count++;
         //    send(sock_fd, &fd_listen, sizeof(fd_listen), 0);
@@ -100,6 +106,7 @@ char Server::beSlave()
             char *recvBuff = new char[255];
             if (recv(this->secondServerFD, recvBuff, sizeof(char) * 255, 0) == 0)
                 break;
+            gameLogic.insertCity(recvBuff);
         }
     }
     return currentPlayer;
@@ -108,9 +115,11 @@ char Server::beSlave()
 void Server::sendWord(char currentPlayer)
 {
     if (!imMaster) {
-        int socket = roomPlayers[currentPlayer];
-        int reconnect = 4;
-        send(socket, &reconnect, sizeof(reconnect), 0);
+        // all Players must reset state
+        for (auto &sock : roomPlayers) {
+            char sendVal = 0;
+            send(sock, &sendVal, sizeof(sendVal), 0);
+        }
     }
     bool disconnectedPlayer = false;
     while(1) { //condition ???
@@ -125,6 +134,10 @@ void Server::sendWord(char currentPlayer)
                 currentPlayer = -1;
             }
 
+            if (imMaster) {
+                send(this->secondServerFD, &currentPlayer, sizeof(currentPlayer), 0);
+            }
+
             for (auto &socket : roomPlayers) {
                 if (socket != currSocket || firstAttempt) {
                     send(socket, &currentPlayer, sizeof(currentPlayer), 0);
@@ -134,10 +147,6 @@ void Server::sendWord(char currentPlayer)
             if (disconnectedPlayer) {
                 std::cerr << "Player disconnected, shutdown" << std::endl;
                 exit(EXIT_FAILURE);
-            }
-
-            if (imMaster) {
-                send(this->secondServerFD, &currentPlayer, sizeof(currentPlayer), 0);
             }
 
             firstAttempt = false;
@@ -178,10 +187,26 @@ void Server::setNumber()
 {
     char buf[2];
     int tmp;
+    std::vector<int> playerIds;
     for(int i = 0; i < (int)roomPlayers.size(); i++){
-        buf[0] = (char)i;
-        tmp = roomPlayers[i];
-        send(tmp, buf, sizeof(buf), 0);
+        if (imMaster) {
+            buf[0] = (char)i;
+            tmp = roomPlayers[i];
+            send(tmp, buf, sizeof(buf), 0);
+        } else {
+            int playerId = 0;
+            tmp = roomPlayers[i];
+            recv(tmp, &playerId, sizeof(playerId), 0);
+            playerIds.push_back(playerId);
+        }
+    }
+    if (!imMaster) {
+        std::vector<int> roomTmp(roomPlayers.size());
+        for (int i = 0; i < (int)playerIds.size(); i++) {
+            int index = playerIds[i];
+            roomTmp[index] = roomPlayers[i];
+        }
+        this->roomPlayers = roomTmp;
     }
 }
 
@@ -189,6 +214,7 @@ Server::Server(int clientPort, int peerPort, std::string clusterHosts)
 {
     /* Until all players are connected
      * */
+    int fd_listen = initClientPort(clientPort);
     CreateCluster(peerPort, clusterHosts);
 
     char currentPlayer = 0;
@@ -196,7 +222,7 @@ Server::Server(int clientPort, int peerPort, std::string clusterHosts)
         currentPlayer = beSlave();
     }
 
-    ConnectClient(clientPort);
+    ConnectClient(fd_listen);
 
     if (imMaster) {
         std::cout << "master is up" << std::endl;

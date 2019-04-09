@@ -8,6 +8,7 @@ class TCP_Fail_Tolerance : public TCPNetwork {
 public:
     int ackSend(const void *buffer, size_t length, int flags);
     int ackRecv(void *buffer, size_t length, int flags);
+    int reconnect();
 
     virtual int checkCity(std::string);
     virtual int getClientId();

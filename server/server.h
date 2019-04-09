@@ -15,8 +15,9 @@
 
 class Server{
     private:
-        void ConnectClient(int Port);
+        void ConnectClient(int fd_listen);
         void CreateCluster(int Port, std::string ip);
+        int initClientPort(int Port);
         bool chatCheck(char *city);
         char beSlave();
 
