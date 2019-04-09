@@ -58,12 +58,12 @@ int Server::initClientPort(int Port)
 
     int fd_listen = socket(AF_INET, SOCK_STREAM, 0);
     int opt = 1;
-    if(setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+    if(setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
         perror("Setsockopt");
 
-    if (!bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr)))
+    if (bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr)))
         perror("bind");
-    if (!listen(fd_listen, 5))
+    if (listen(fd_listen, 5))
         perror("listen");
     return fd_listen;
 }
@@ -110,6 +110,7 @@ char Server::beSlave()
             gameLogic.insertCity(recvBuff);
         }
     }
+    std::cout << "slave take control" << std::endl;
     return currentPlayer;
 }
 
@@ -227,8 +228,6 @@ Server::Server(int clientPort, int peerPort, std::string clusterHosts)
 
     if (imMaster) {
         std::cout << "master is up" << std::endl;
-    } else {
-        std::cout << "slave take control" << std::endl;
     }
 
     setNumber();

@@ -14,6 +14,9 @@ void Client::enterCity()
             interface->printMistake(mistake);
         }
         input = interface->getInput();
+        if (input[0] == '$') {
+            interface->printTextMessage("Player " + std::to_string(clientId) + ": " + input.substr(1));
+        }
     } while ((mistake = network->checkCity(input)) != 0 || input[0] == '$');
 }
 
@@ -23,7 +26,7 @@ void Client::waitForMove(int currPlayer)
     network->getMessages(buff);
     std::string text(buff);
     if (text[0] == '$') {
-        text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
+        text = "Player " + std::to_string(currPlayer) + " : " + text.substr(1);
     } else if (buff[0] == 0) {
         return;
     } else {

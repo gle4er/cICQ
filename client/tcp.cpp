@@ -30,10 +30,6 @@ int TCPNetwork::establishServer()
 {
     for (int retries = 0; retries < 5; retries++) {
         for (auto &currentServer : serverList) {
-            std::string addr = currentServer.ip + ":" + 
-                std::to_string(currentServer.port);
-
-            std::cout << addr << std::endl;
             if (this->setSocket(currentServer.ip, currentServer.port) == 0) {
                 return 0;
             }

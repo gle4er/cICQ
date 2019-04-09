@@ -17,9 +17,13 @@ int TCP_Fail_Tolerance::ackSend(const void *buffer, size_t length, int flags)
         } else {
             std::cerr << "Switched to slave" << std::endl;
         }
-        sndCount = send(this->sock_fd, buffer, length, flags);
+        if (!send(this->sock_fd, buffer, length, flags)) {
+            perror("Cannot connect to any server");
+            exit(EXIT_FAILURE);
+        }
+        return 1;
     }
-    return sndCount;
+    return 0;
 }
 
 int TCP_Fail_Tolerance::ackRecv(void *buffer, size_t length, int flags)
@@ -32,16 +36,23 @@ int TCP_Fail_Tolerance::ackRecv(void *buffer, size_t length, int flags)
         } else {
             std::cerr << "Switched to slave" << std::endl;
         }
-        recvCount = recv(this->sock_fd, buffer, length, flags);
+        if (!recv(this->sock_fd, buffer, length, flags)) {
+            perror("Cannot connect to any server");
+            exit(EXIT_FAILURE);
+        }
+        return 1;
     }
-    return recvCount;
+    return 0;
 }
 
 int TCP_Fail_Tolerance::checkCity(std::string city)
 {
     int checkFlag = 0;
-    ackSend(city.c_str(), sizeof(char) * 255, 0);
-    ackRecv(&checkFlag, sizeof(checkFlag), 0);
+    int send_switched = ackSend(city.c_str(), sizeof(char) * 255, 0);
+    int recv_switched = ackRecv(&checkFlag, sizeof(checkFlag), 0);
+    if (send_switched || recv_switched) {
+        std::cerr << "You should reenter your answer or message" << std::endl;
+    }
     return checkFlag;
 }
 
