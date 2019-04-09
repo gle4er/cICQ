@@ -1,8 +1,6 @@
-#include "network/tcp_fail_t.h" 
+#include "network/tcp_fail_t.h"
 
 #include <string>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iostream>
@@ -79,8 +77,9 @@ void TCP_Fail_Tolerance::getMessages(char *buff)
 int TCP_Fail_Tolerance::reconnect()
 {
     if (!establishServer()) {
-        if (!send(this->sock_fd, &this->cliId, sizeof(this->cliId), 0))
+        if (!send(this->sock_fd, &this->cliId, sizeof(this->cliId), 0)) {
             perror("send cliId");
+        }
         return 0;
     }
     return 1;

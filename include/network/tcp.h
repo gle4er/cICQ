@@ -5,14 +5,15 @@
 #include <vector>
 #include <string>
 
-class TCPNetwork : public Network {
+class TCPNetwork : public Network
+{
 protected:
     struct Server {
         std::string ip;
         int port;
     };
     std::vector<Server> serverList;
-	int sock_fd;
+    int sock_fd;
     int cliId;
 
 public:

@@ -3,7 +3,8 @@
 
 #include "interface/interface.h"
 
-class Console : public Interface {
+class Console : public Interface
+{
 public:
     std::string getInput();
     void printMistake(int mist);
