@@ -7,8 +7,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <thread>
-#include <chrono>
 
 #include <iostream>
 
@@ -48,16 +46,19 @@ int TCPNetwork::setSocket(std::string ip, int port)
 {
 	struct sockaddr_in client_addr;
 
-	this->sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if ((this->sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+        perror("socket");
+    int opt = 1;
+    if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+        perror("Setsockopt");
+
 	client_addr.sin_family = AF_INET;
 	client_addr.sin_port = htons(port);
 	client_addr.sin_addr.s_addr = inet_addr(ip.c_str());
     // wait before slave or master be ready
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-	connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
-    int rc = errno;
-    perror("connect");
-    std::cout << rc << std::endl;
+	int rc = connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
+    if (rc != 0)
+        perror("connect");
     return rc;
 }
 
@@ -65,13 +66,15 @@ int TCPNetwork::getClientId()
 {
     char tmp[2];
     recv(this->sock_fd, tmp, sizeof(tmp), 0);
-    this->clientId = (int)tmp[0];
-    return this->clientId;
+    this->cliId = (int)tmp[0];
+    return this->cliId;
 }
 
 int TCPNetwork::getCurrPlayer()
 {
-    return this->getClientId();
+    char tmp[2];
+    recv(this->sock_fd, tmp, sizeof(tmp), 0);
+    return (int)tmp[0];
 }
 
 TCPNetwork::TCPNetwork(std::string file)

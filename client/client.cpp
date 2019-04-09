@@ -24,7 +24,7 @@ void Client::waitForMove(int currPlayer)
     std::string text(buff);
     if (text[0] == '$') {
         text = "Player " + std::to_string(currPlayer) + " say: " + text.substr(1);
-    } else if (text[0] == '0') {
+    } else if (buff[0] == 0) {
         return;
     } else {
         text = "Player " + std::to_string(currPlayer) + " choosed city: " + text;

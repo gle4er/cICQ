@@ -61,19 +61,20 @@ int Server::initClientPort(int Port)
     if(setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
         perror("Setsockopt");
 
-    bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr));
-    perror("bind");
+    if (!bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr)))
+        perror("bind");
+    if (!listen(fd_listen, 5))
+        perror("listen");
     return fd_listen;
 }
 
 void Server::ConnectClient(int fd_listen)
 {
-    listen(fd_listen, 5);
-    perror("listen");
     int count = 0;
     while(count < MAX_PLAYERS){
         int sock_fd = accept(fd_listen, NULL, NULL);
-        perror("accept");
+        if (sock_fd == -1)
+            perror("accept");
         roomPlayers.push_back(sock_fd);
         count++;
         //    send(sock_fd, &fd_listen, sizeof(fd_listen), 0);

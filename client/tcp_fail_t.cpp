@@ -49,8 +49,15 @@ int TCP_Fail_Tolerance::getClientId()
 {
     char tmp[2];
     ackRecv(tmp, sizeof(tmp), 0);
-    int id = (int)tmp[0];
-    return id;
+    this->cliId = (int)tmp[0];
+    return this->cliId;
+}
+
+int TCP_Fail_Tolerance::getCurrPlayer()
+{
+    char tmp[2];
+    ackRecv(tmp, sizeof(tmp), 0);
+    return (int)tmp[0];
 }
 
 void TCP_Fail_Tolerance::getMessages(char *buff)
@@ -61,10 +68,9 @@ void TCP_Fail_Tolerance::getMessages(char *buff)
 int TCP_Fail_Tolerance::reconnect()
 {
     if (!establishServer()) {
-        int rc = send(this->sock_fd, &clientId, sizeof(clientId), 0);
-        perror("send");
-        if (rc > 0)
-            return 0;
+        if (!send(this->sock_fd, &this->cliId, sizeof(this->cliId), 0))
+            perror("send cliId");
+        return 0;
     }
     return 1;
 }

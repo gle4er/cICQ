@@ -12,6 +12,7 @@ public:
 
     virtual int checkCity(std::string);
     virtual int getClientId();
+    virtual int getCurrPlayer();
     virtual void getMessages(char *);
 
     TCP_Fail_Tolerance(std::string file="./serverlist") : TCPNetwork(file) {}
