@@ -4,7 +4,8 @@
 #include "interface/interface.h"
 #include "network/network.h"
 
-class Client {
+class Client
+{
 private:
     Interface *interface;
     Network *network;

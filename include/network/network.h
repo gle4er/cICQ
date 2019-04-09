@@ -3,7 +3,8 @@
 
 #include <string>
 
-class Network {
+class Network
+{
 public:
     virtual int establishServer() = 0;
     virtual int checkCity(std::string city) = 0;                    // returns 0, if city is correct

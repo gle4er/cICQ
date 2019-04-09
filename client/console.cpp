@@ -12,13 +12,14 @@ std::string Console::getInput()
 }
 
 void Console::printMistake(int mist)
-{   
-    if(mist == 1)
+{
+    if(mist == 1) {
         std::cout << "Wrong first letter. ";
-    else if(mist == 2)
+    } else if(mist == 2) {
         std::cout << "This city has already been. ";
-    else if(mist == 3)
+    } else if(mist == 3) {
         std::cout << "This city doesn't exists. ";
+    }
 }
 
 void Console::printError(std::string error)
@@ -44,10 +45,11 @@ int Console::getAnswerYesNo(std::string text)
         std::string answer;
         std::getline(std::cin, answer);
         if (answer == "Y" || answer == "y" ||
-                answer == "")
+            answer == "") {
             return 0;
-        else if (answer == "N" || answer == "n")
+        } else if (answer == "N" || answer == "n") {
             return -1;
+        }
     }
     return -1;
 }

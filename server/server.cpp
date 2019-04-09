@@ -1,6 +1,8 @@
 #include "server.h"
 #include "logPlay.h"
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <iostream>
 
 void Server::CreateCluster(int Port, std::string serverLine)
@@ -16,8 +18,9 @@ void Server::CreateCluster(int Port, std::string serverLine)
 
         int fd_listen = socket(AF_INET, SOCK_STREAM, 0);
         int opt = 1;
-        if (setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+        if (setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
             perror("Setsockopt");
+        }
 
         bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr));
         listen(fd_listen, 5);
@@ -30,7 +33,7 @@ void Server::CreateCluster(int Port, std::string serverLine)
         }
     } else {
         std::size_t pos = serverLine.find(":");
-        std::string ip = serverLine.substr(0, pos);  
+        std::string ip = serverLine.substr(0, pos);
         std::string port = serverLine.substr(pos + 1);
 
         struct sockaddr_in client_addr;
@@ -58,23 +61,27 @@ int Server::initClientPort(int Port)
 
     int fd_listen = socket(AF_INET, SOCK_STREAM, 0);
     int opt = 1;
-    if(setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+    if (setsockopt(fd_listen, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
         perror("Setsockopt");
+    }
 
-    if (bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr)))
+    if (bind(fd_listen, (struct sockaddr*)&addr, sizeof(addr))) {
         perror("bind");
-    if (listen(fd_listen, 5))
+    }
+    if (listen(fd_listen, 5)) {
         perror("listen");
+    }
     return fd_listen;
 }
 
 void Server::ConnectClient(int fd_listen)
 {
     int count = 0;
-    while(count < MAX_PLAYERS){
+    while(count < MAX_PLAYERS) {
         int sock_fd = accept(fd_listen, NULL, NULL);
-        if (sock_fd == -1)
+        if (sock_fd == -1) {
             perror("accept");
+        }
         roomPlayers.push_back(sock_fd);
         count++;
         //    send(sock_fd, &fd_listen, sizeof(fd_listen), 0);
@@ -94,19 +101,22 @@ char Server::beSlave()
 {
     char currentPlayer = 0;
     while (true) {
-        if (recv(this->secondServerFD, &currentPlayer, sizeof(currentPlayer), 0) == 0)
+        if (recv(this->secondServerFD, &currentPlayer, sizeof(currentPlayer), 0) == 0) {
             break;
+        }
         if (currentPlayer == -1) {
             std::cerr << "Player disconnected, shutdown" << std::endl;
             exit(EXIT_FAILURE);
         }
         bool isRightCity = false;
-        if (recv(this->secondServerFD, &isRightCity, sizeof(isRightCity), 0) == 0)
+        if (recv(this->secondServerFD, &isRightCity, sizeof(isRightCity), 0) == 0) {
             break;
+        }
         if (isRightCity) {
             char *recvBuff = new char[255];
-            if (recv(this->secondServerFD, recvBuff, sizeof(char) * 255, 0) == 0)
+            if (recv(this->secondServerFD, recvBuff, sizeof(char) * 255, 0) == 0) {
                 break;
+            }
             gameLogic.insertCity(recvBuff);
         }
     }
@@ -124,14 +134,14 @@ void Server::sendWord(char currentPlayer)
         }
     }
     bool disconnectedPlayer = false;
-    while(1) { //condition ???
+    while(1) {
         std::cout << "Current player move: " << (int)currentPlayer << std::endl;
         int currSocket = roomPlayers[currentPlayer];
 
         bool isRightCity = false;
         bool firstAttempt = true;
-        while(isRightCity == false){
-            //send id walking
+        while(isRightCity == false) {
+
             if (disconnectedPlayer) {
                 currentPlayer = -1;
             }
@@ -158,7 +168,7 @@ void Server::sendWord(char currentPlayer)
                 disconnectedPlayer = true;
             }
 
-            if(!chatCheck(recvBuff) && gameLogic.check(recvBuff) == true){
+            if(!chatCheck(recvBuff) && gameLogic.check(recvBuff) == true) {
                 isRightCity = true;
                 currentPlayer = (currentPlayer + 1) % roomPlayers.size();
             }
@@ -170,14 +180,16 @@ void Server::sendWord(char currentPlayer)
                 }
             }
 
-            for(int tmp : roomPlayers){
+            for(int tmp : roomPlayers) {
                 if(tmp == currSocket) {
                     int tmpSend = gameLogic.getMistake();
-                    if (send(currSocket, &tmpSend, sizeof(tmpSend), 0) == 0)
+                    if (send(currSocket, &tmpSend, sizeof(tmpSend), 0) == 0) {
                         disconnectedPlayer = true;
+                    }
                 } else {
-                    if (send(tmp, recvBuff, sizeof(char) * 255, 0) == 0)
+                    if (send(tmp, recvBuff, sizeof(char) * 255, 0) == 0) {
                         disconnectedPlayer = true;
+                    }
                 }
             }
             delete[] recvBuff;
@@ -190,7 +202,7 @@ void Server::setNumber()
     char buf[2];
     int tmp;
     std::vector<int> playerIds;
-    for(int i = 0; i < (int)roomPlayers.size(); i++){
+    for (int i = 0; i < (int)roomPlayers.size(); i++) {
         if (imMaster) {
             buf[0] = (char)i;
             tmp = roomPlayers[i];

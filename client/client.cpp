@@ -1,4 +1,8 @@
 #include "client.h"
+#include "interface/interface.h"
+#include "network/network.h"
+
+#include <string>
 
 void Client::waitForAll()
 {
@@ -41,8 +45,9 @@ Client::Client(Interface *iface, Network *netw) : interface(iface), network(netw
     while (network->establishServer()) {
         interface->printError("Cannot connect to one server!");
         int answer = interface->getAnswerYesNo("Retry connect or quit?");
-        if (answer == -1)
+        if (answer == -1) {
             exit(EXIT_FAILURE);
+        }
     }
     interface->printInfo("Connected, wait for all");
 

@@ -3,7 +3,8 @@
 
 #include <string>
 
-class Interface {
+class Interface
+{
 public:
     virtual std::string getInput() = 0;
     virtual void printMistake(int mist) = 0;
