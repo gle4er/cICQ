@@ -1,6 +1,7 @@
 cmake_minimum_required( VERSION 2.6 )
 project( cICQ )
 set( CMAKE_BUILD_TYPE "Debug" ) 
+set( CMAKE_CXX_STANDART 14 )
 set( BIN_CLIENT cicq )
 set( BIN_SERVER cicq_server )
 include_directories( ./include )
