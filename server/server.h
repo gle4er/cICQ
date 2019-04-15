@@ -16,16 +16,18 @@ private:
     void CreateCluster(int Port, std::string ip);
     int initClientPort(int Port);
     bool chatCheck(char *city);
-    char beSlave();
+    void beSlave();
 
     bool imMaster = false;
     std::vector<int> roomPlayers;
     int secondServerFD;
     logPlay gameLogic;
+    char currentPlayer;
+    char prevPlayer;
 public:
     Server(int clientPort, int peerPort, std::string clusterHosts);
 
-    void sendWord(char currentPlayer);
+    void sendWord();
     void setNumber();
 };
 

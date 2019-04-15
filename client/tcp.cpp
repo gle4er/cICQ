@@ -37,21 +37,19 @@ int TCPNetwork::setSocket(std::string ip, int port)
 
     if ((this->sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
+        exit(EXIT_FAILURE);
     }
     int opt = 1;
     if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
         perror("Setsockopt");
+        exit(EXIT_FAILURE);
     }
 
     client_addr.sin_family = AF_INET;
     client_addr.sin_port = htons(port);
     client_addr.sin_addr.s_addr = inet_addr(ip.c_str());
     // wait before slave or master be ready
-    int rc = connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
-    if (rc != 0) {
-        perror("connect");
-    }
-    return rc;
+    return connect(this->sock_fd, (struct sockaddr*)&client_addr, sizeof(client_addr));
 }
 
 int TCPNetwork::getClientId()
