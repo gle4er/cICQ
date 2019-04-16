@@ -100,7 +100,7 @@ bool Server::chatCheck(char *text)
 void Server::beSlave()
 {
     this->prevPlayer = this->currentPlayer;
-    while (true) {
+    while (1) {
         if (recv(this->secondServerFD, &this->currentPlayer, sizeof(currentPlayer), 0) == 0) {
             break;
         }
